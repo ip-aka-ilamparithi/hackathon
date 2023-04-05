@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ms-mul
+  name: ms-mul
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-mul
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: ms-mul
+    spec:
+      containers:
+      - args:
+        - ms_service_mul
+        image: mskube1
+        name: ms-mul
+        ports:
+        - containerPort: 8001
+        imagePullPolicy: Never
+        envFrom:
+          - configMapRef:
+              name: envs-config
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ms-mul
+  name: svc-mul
+spec:
+  ports:
+  - port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    app: ms-mul
+  type: ClusterIP
+status:
+  loadBalancer: {}
+
